@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>扫雷</title>
+	<style>
+      body{
+        background: url(./1.jpg) center no-repeat;
+        background-size: 1370px 1280px;
+      }
+      .sweep{
+      	position: absolute;
+      	top: 0;
+      	right: 0;
+      	bottom: 0;
+      	left: 0;
+      	margin: auto;
+      	width: 600px;
+      	height: 600px;
+      }
+      .block{
+      	font-size: 20px;
+      	font-family: '微软雅黑';
+      	font-style: normal;
+      	text-align: center;
+      	line-height: 58px;
+      	width: 58px;
+      	height: 58px;
+      	background:url(./2.png) center no-repeat;
+        background-size:58px 58px;
+      	float: left;
+/*      	border: 1px solid white*/
+      }
+      .biaoji{
+      	background: url(./1ebdfea0b45c62e37547da091928a969.png) center no-repeat;
+        background-size: 58px 58px;
+      }
+      .tip{
+        font-size: 38px;
+        color: white;
+      	background:none 
+      }
+      .fail{
+      	background: url(./3.gif) center no-repeat;
+        background-size:58px 58px;
+      }
+	</style>
+</head>
+<body>
+	<div class="sweep">
+		
+	</div>
+	<script src="jquery-1.12.0.js"></script>
+    <script>
+    $(document).on('contextmenu',false);
+      var xy2id = function(a,b){
+      	return a+'-'+b
+      }
+      var jisuan = function(x,y){
+      	var num = 0;
+      	if($('#'+xy2id(x,y-1)).is('.lei')){num++};
+      	if($('#'+xy2id(x-1,y-1)).is('.lei')){num++};
+      	if($('#'+xy2id(x+1,y-1)).is('.lei')){num++};
+      	if($('#'+xy2id(x+1,y+1)).is('.lei')){num++};
+      	if($('#'+xy2id(x,y+1)).is('.lei')){num++};
+      	if($('#'+xy2id(x+1,y)).is('.lei')){num++};
+      	if($('#'+xy2id(x-1,y)).is('.lei')){num++};
+      	if($('#'+xy2id(x-1,y+1)).is('.lei')){num++};
+        return num;
+      }
+      var zuojian = function(e){
+          if($(this).is('.biaoji')){
+          	return            
+          }else if(e.data.lei){
+          	$('.lei').addClass('fail')
+          	
+          }else{
+          	$(this).addClass('tip').text(jisuan(e.data.x,e.data.y))
+          }
+      }
+
+      var youjian = function(e){
+      	if($(this).is('.tip')){
+      		return
+      	}
+
+          $(this).toggleClass('biaoji')
+          if($('.biaoji.lei').length === $('.lei').length){
+          	alert('ying')
+          }
+      }
+
+      var clickHandler = function(e){
+      	if (e.which === 1) {
+      		$.proxy(zuojian,this)(e)
+      	}else if(e.which === 3){
+      		$.proxy(youjian,this)(e)
+      	}
+      }
+
+       for(var i=0;i<10;i++){
+       	for(var j=0;j<10;j++){
+       		var isLei = Math.random() > 0.9;
+       		$('<div>')
+       		.attr('id',i+'-'+j)
+       		.on('mousedown',{x:i,y:j,lei:isLei},clickHandler)
+       		.addClass(function(){
+       			return 'block '+(isLei ? 'lei':'');
+       		})
+       		// .text(function(){
+         //        return  isLei?'lei':'';
+       		// })
+       		.appendTo('.sweep')
+       	}
+       }
+    </script>
+</body>
+</html>
